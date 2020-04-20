@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyrlandAAC", "MyrlandAAC.csproj", "{4F282713-2A05-42C8-B772-9E7545F6E2DA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F282713-2A05-42C8-B772-9E7545F6E2DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F282713-2A05-42C8-B772-9E7545F6E2DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F282713-2A05-42C8-B772-9E7545F6E2DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F282713-2A05-42C8-B772-9E7545F6E2DA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {622F7BDA-739C-4016-BF18-C2C6CC204517}
+	EndGlobalSection
+EndGlobal
