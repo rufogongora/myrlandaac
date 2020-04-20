@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using myrlandaac.Services;
 using MyrlandAAC.Models;
 
 namespace MyrlandAAC
@@ -29,6 +31,11 @@ namespace MyrlandAAC
 			});
 
 			services.AddDbContext<OpenTibiaContext>();
+			services.AddAutoMapper(typeof(Startup));
+    		services.AddControllersWithViews();
+
+			// Custom Services
+			services.AddScoped<IAccountService, AccountService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
