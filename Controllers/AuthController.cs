@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyrlandAAC.Services;
 using MyrlandAAC.ViewModels;
@@ -21,8 +22,7 @@ namespace MyrlandAAC.Controllers
         
         [HttpPost, Route("login")]
         public async Task<IActionResult> Login(LoginViewModel login) {
-            var acc =  await _authService.Login(login);
-            var res = _mapper.Map<AccountViewModel>(acc);
+            var res =  await _authService.Login(login);
             if (res != null) {
                 return Ok(res);
             } else {
@@ -40,5 +40,11 @@ namespace MyrlandAAC.Controllers
                 return BadRequest(new { Error = "Account already exists." });
             }
         }
+
+        [Authorize]
+        [HttpGet, Route("me")]
+        public IActionResult Me() {
+            return Ok(User.Identity.Name);
+        }   
     }
 }

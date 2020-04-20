@@ -8,6 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyrlandAAC.Models;
 using MyrlandAAC.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace MyrlandAAC
 {
@@ -33,6 +36,26 @@ namespace MyrlandAAC
 			services.AddDbContext<OpenTibiaContext>();
 			services.AddAutoMapper(typeof(Startup));
     		services.AddControllersWithViews();
+
+			var key = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtConfig").GetSection("secret").Value);
+			services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+			
 
 			// Custom Services
 			services.AddScoped<IAccountService, AccountService>();
@@ -62,6 +85,10 @@ namespace MyrlandAAC
 			}
 
 			app.UseRouting();
+			
+			//auth stuff
+			app.UseAuthentication();
+            app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{
@@ -82,6 +109,7 @@ namespace MyrlandAAC
 					spa.UseAngularCliServer(npmScript: "start");
 				}
 			});
+
 
 		}
 	}

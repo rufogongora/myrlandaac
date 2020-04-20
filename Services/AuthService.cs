@@ -1,34 +1,56 @@
+using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using MyrlandAAC.Models;
 using MyrlandAAC.ViewModels;
 
 namespace MyrlandAAC.Services
 {
     public interface IAuthService {
-        Task<Account> Login(LoginViewModel login);
+        Task<LoginResponseViewModel> Login(LoginViewModel login);
         Task<Account> CreateAccount(LoginViewModel login);
     }
     public class AuthService: IAuthService
     {
         private readonly OpenTibiaContext _context;
-        public AuthService(OpenTibiaContext context) {
+        private readonly string _secret;
+        private readonly IMapper _mapper;
+        public AuthService(
+            OpenTibiaContext context,
+            IConfiguration configuration,
+            IMapper mapper) {
+            _secret = configuration.GetSection("JwtConfig").GetSection("secret").Value;
+            _mapper = mapper;
             _context = context;
         }
 
-        public async Task<Account> Login(LoginViewModel login) {
+        public async Task<LoginResponseViewModel> Login(LoginViewModel login) {
 
             var sha1Password = ToSha1(login.Password);
 
             var acc = await _context.Accounts.Where(x => 
-                x.Name == login.Username && 
-                x.Password == sha1Password)
+                    x.Name == login.Username && 
+                    x.Password == sha1Password)
                 .FirstOrDefaultAsync();
+            
+            if (acc == null) {
+                return null;
+            }
 
-            return acc;
+
+            return new LoginResponseViewModel
+                { 
+                    Account = _mapper.Map<AccountViewModel>(acc), 
+                    token = SignJWTToken(acc.Name)
+                };
         }
 
         public async Task<Account> CreateAccount(LoginViewModel login) {
@@ -63,6 +85,23 @@ namespace MyrlandAAC.Services
                 }
                 return sb.ToString();
             }
+        }
+
+        private string SignJWTToken(string name) {
+            // authentication successful so generate jwt token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[] 
+                {
+                    new Claim(ClaimTypes.Name, name)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }
