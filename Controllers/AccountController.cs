@@ -6,8 +6,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using myrlandaac.Services;
-using myrlandaac.ViewModels;
+using MyrlandAAC.Services;
+using MyrlandAAC.ViewModels;
 using MyrlandAAC.Models;
 
 namespace MyrlandAAC.Controllers
@@ -29,11 +29,11 @@ namespace MyrlandAAC.Controllers
         }
 
         [HttpGet, Route("{id:int}")]
-        public IActionResult Get([FromRoute]int id)
+        public async Task<IActionResult> Get([FromRoute]int id)
         {
-            var res = _accService.GetAccount(id);
+            var res = await _accService.GetAccount(id);
             var view = _mapper.Map<AccountViewModel>(res);
-            return Ok(res);
+            return Ok(view);
         }
     }
 }

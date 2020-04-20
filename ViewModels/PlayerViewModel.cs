@@ -1,4 +1,4 @@
-namespace myrlandaac.ViewModels
+namespace MyrlandAAC.ViewModels
 {
     public class PlayerViewModel
     {

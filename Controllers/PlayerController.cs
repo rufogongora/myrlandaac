@@ -1,6 +1,8 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MyrlandAAC.Models;
+using MyrlandAAC.Services;
 
 namespace MyrlandAAC.Controllers
 {
@@ -8,15 +10,15 @@ namespace MyrlandAAC.Controllers
     [ApiController]
     public class PlayerController: Controller
     {
-        private readonly OpenTibiaContext _context;
-        public PlayerController(OpenTibiaContext context)
+        private readonly IPlayerService _pService;
+        public PlayerController(IPlayerService pService)
         {
-            _context = context;
+            _pService = pService;
         }
 
-        [HttpGet]
-        public IActionResult Get() {
-            var r = _context.Players.ToList();
+        [HttpGet, Route("search/{name}")]
+        public async Task<IActionResult> SearchByName(string name) {
+            var r = await _pService.SearchPlayer(name);
             return Ok(r);
         }
         

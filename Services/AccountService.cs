@@ -1,14 +1,15 @@
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using myrlandaac.ViewModels;
+using MyrlandAAC.ViewModels;
 using MyrlandAAC.Models;
 
-namespace myrlandaac.Services
+namespace MyrlandAAC.Services
 {
     public interface IAccountService {
         Account FindAccount(string name);
-        Account GetAccount(int id);
+        Task<Account> GetAccount(int id);
     }
     public class AccountService : IAccountService
     {
@@ -20,17 +21,20 @@ namespace myrlandaac.Services
         }
         public Account FindAccount(string name) {
             var res = _context
-            .Accounts
-            .Where(x => x.Name == name)
-            .Include(x => x.Players)
-            .FirstOrDefault();
+                .Accounts
+                .Include(x => x.Players)
+                .Where(x => x.Name == name)
+                .FirstOrDefault();
             
             return res;     
         }
 
-        public Account GetAccount(int id) {
-            var res = _context.Accounts.Where(x => x.Id == id)
-            .FirstOrDefault();
+        public async Task<Account> GetAccount(int id) {
+            var res = await _context
+                .Accounts
+                .Include(x => x.Players)
+                .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
             
             return res;     
         }

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace myrlandaac.ViewModels
+namespace MyrlandAAC.ViewModels
 {
     public class AccountViewModel
     {

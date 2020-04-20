@@ -1,7 +1,7 @@
 using AutoMapper;
 using MyrlandAAC.Models;
 
-namespace myrlandaac.ViewModels
+namespace MyrlandAAC.ViewModels
 {
     public class MappingProfile: Profile
     {
