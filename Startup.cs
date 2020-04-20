@@ -37,6 +37,7 @@ namespace MyrlandAAC
 			// Custom Services
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<IPlayerService, PlayerService>();
+			services.AddScoped<IAuthService, AuthService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
