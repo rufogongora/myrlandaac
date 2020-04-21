@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MyrlandAAC.Enums;
 using MyrlandAAC.Models;
 using MyrlandAAC.ViewModels;
 
@@ -16,7 +17,7 @@ namespace MyrlandAAC.Services
 {
     public interface IAuthService {
         Task<LoginResponseViewModel> Login(LoginViewModel login);
-        Task<Account> CreateAccount(LoginViewModel login);
+        Task<RegisterResponseViewModel> CreateAccount(LoginViewModel login);
     }
     public class AuthService: IAuthService
     {
@@ -42,18 +43,22 @@ namespace MyrlandAAC.Services
                 .FirstOrDefaultAsync();
             
             if (acc == null) {
-                return null;
+                return new LoginResponseViewModel {
+                    Response = LoginResponseEnum.WrongUsernameOrPassword
+                };
             }
 
 
             return new LoginResponseViewModel
                 { 
                     Account = _mapper.Map<AccountViewModel>(acc), 
-                    token = SignJWTToken(acc.Name)
+                    Token = SignJWTToken(acc),
+                    Response = LoginResponseEnum.Success,
+                    Role = (RoleEnum)acc.Type
                 };
         }
 
-        public async Task<Account> CreateAccount(LoginViewModel login) {
+        public async Task<RegisterResponseViewModel> CreateAccount(LoginViewModel login) {
             
             var existing = await _context
                 .Accounts
@@ -61,18 +66,24 @@ namespace MyrlandAAC.Services
                 .FirstOrDefaultAsync();
 
             if (existing != null) {
-                return null;
+                return new RegisterResponseViewModel {
+                    Response = RegisterAccountResponseEnum.AccountAlreadyExists
+                };
             }
 
             var acc = new Account {
                 Name = login.Username.ToLower(),
-                Password = ToSha1(login.Password)
+                Password = ToSha1(login.Password),
+                Type = 1
             };
 
             _context.Add(acc);
             await _context.SaveChangesAsync();
 
-            return acc;
+            return new RegisterResponseViewModel {
+                Account = _mapper.Map<AccountViewModel>(acc),
+                Response = RegisterAccountResponseEnum.Success
+            };
         }
 
         private string ToSha1(string str) {
@@ -87,7 +98,7 @@ namespace MyrlandAAC.Services
             }
         }
 
-        private string SignJWTToken(string name) {
+        private string SignJWTToken(Account acc) {
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_secret);
@@ -95,7 +106,8 @@ namespace MyrlandAAC.Services
             {
                 Subject = new ClaimsIdentity(new Claim[] 
                 {
-                    new Claim(ClaimTypes.Name, name)
+                    new Claim(ClaimTypes.Name, acc.Name),
+                    new Claim(ClaimTypes.Role, Enum.GetName(typeof(RoleEnum), acc.Type - 1))
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

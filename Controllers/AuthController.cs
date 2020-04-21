@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyrlandAAC.Enums;
 using MyrlandAAC.Services;
 using MyrlandAAC.ViewModels;
 
@@ -23,7 +24,7 @@ namespace MyrlandAAC.Controllers
         [HttpPost, Route("login")]
         public async Task<IActionResult> Login(LoginViewModel login) {
             var res =  await _authService.Login(login);
-            if (res != null) {
+            if (res.Response == LoginResponseEnum.Success) {
                 return Ok(res);
             } else {
                 return BadRequest(new { Error = "Invalid username or password." });
@@ -32,12 +33,13 @@ namespace MyrlandAAC.Controllers
 
         [HttpPost, Route("createaccount")]
         public async Task<IActionResult> CreateAccount(LoginViewModel login) {
-            var acc =  await _authService.CreateAccount(login);
-            var res = _mapper.Map<AccountViewModel>(acc);
-            if (res != null) {
+            var res =  await _authService.CreateAccount(login);
+            if (res.Response == RegisterAccountResponseEnum.Success) {
                 return Ok(res);
-            } else {
+            } else if (res.Response == RegisterAccountResponseEnum.AccountAlreadyExists) {
                 return BadRequest(new { Error = "Account already exists." });
+            } else {
+                return BadRequest("No idea bro");
             }
         }
 

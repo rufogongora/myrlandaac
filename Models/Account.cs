@@ -14,5 +14,6 @@ namespace MyrlandAAC.Models
         public string Name { get; set; }
         public string Password { get; set; }
         public virtual ICollection<Player> Players { get; set; }
+        public int Type {get;set;}
     }
 }

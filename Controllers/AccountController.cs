@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using MyrlandAAC.Services;
 using MyrlandAAC.ViewModels;
 using MyrlandAAC.Models;
+using Microsoft.AspNetCore.Authorization;
+using MyrlandAAC.Enums;
 
 namespace MyrlandAAC.Controllers
 {
@@ -28,6 +30,7 @@ namespace MyrlandAAC.Controllers
             _accService = accService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet, Route("{id:int}")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
