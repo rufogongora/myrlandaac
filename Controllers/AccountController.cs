@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyrlandAAC.Services;
+using MyrlandAAC.ViewModels;
 using MyrlandAAC.Models;
+using Microsoft.AspNetCore.Authorization;
+using MyrlandAAC.Enums;
 
 namespace MyrlandAAC.Controllers
 {
@@ -13,18 +18,25 @@ namespace MyrlandAAC.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly OpenTibiaContext _context;
-        public AccountController(OpenTibiaContext context)
+        private readonly IAccountService _accService;
+        private readonly IMapper _mapper;
+
+        public AccountController(
+            IMapper mapper,
+            IAccountService accService
+            )
         {
-            _context = context;
+            _mapper = mapper;
+            _accService = accService;
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        [Authorize(Roles = "Admin")]
+        [HttpGet, Route("{id:int}")]
+        public async Task<IActionResult> Get([FromRoute]int id)
         {
-            var res = _context.Accounts
-                    .Include(x => x.Players).OrderBy(x => x.Id).ToList();
-            return Ok(res);
+            var res = await _accService.GetAccount(id);
+            var view = _mapper.Map<AccountViewModel>(res);
+            return Ok(view);
         }
     }
 }
