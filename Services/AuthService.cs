@@ -107,7 +107,7 @@ namespace MyrlandAAC.Services
                 Subject = new ClaimsIdentity(new Claim[] 
                 {
                     new Claim(ClaimTypes.Name, acc.Name),
-                    new Claim(ClaimTypes.Role, Enum.GetName(typeof(RoleEnum), acc.Type - 1))
+                    // new Claim(ClaimTypes.Role, Enum.GetName(typeof(RoleEnum), acc.Type - 1))
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
