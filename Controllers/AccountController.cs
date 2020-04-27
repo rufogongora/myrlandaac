@@ -31,10 +31,19 @@ namespace MyrlandAAC.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet, Route("{id:int}")]
+        [HttpGet, Route("search/{id:int}")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
             var res = await _accService.GetAccount(id);
+            var view = _mapper.Map<AccountViewModel>(res);
+            return Ok(view);
+        }
+
+        [Authorize]
+        [HttpGet, Route("me")]
+        public async Task<IActionResult> Me() {
+
+            var res = await _accService.GetAccountByName(User.Identity.Name);
             var view = _mapper.Map<AccountViewModel>(res);
             return Ok(view);
         }

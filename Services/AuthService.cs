@@ -40,6 +40,7 @@ namespace MyrlandAAC.Services
             var acc = await _context.Accounts.Where(x => 
                     x.Name == login.Username && 
                     x.Password == sha1Password)
+                .Include(x => x.Players)
                 .FirstOrDefaultAsync();
             
             if (acc == null) {

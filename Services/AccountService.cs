@@ -10,6 +10,7 @@ namespace MyrlandAAC.Services
     public interface IAccountService {
         Account FindAccount(string name);
         Task<Account> GetAccount(int id);
+        Task<Account> GetAccountByName(string name);
     }
     public class AccountService : IAccountService
     {
@@ -34,6 +35,16 @@ namespace MyrlandAAC.Services
                 .Accounts
                 .Include(x => x.Players)
                 .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
+            
+            return res;     
+        }
+
+        public async Task<Account> GetAccountByName(string name) {
+            var res = await _context
+                .Accounts
+                .Include(x => x.Players)
+                .Where(x => x.Name == name)
             .FirstOrDefaultAsync();
             
             return res;     

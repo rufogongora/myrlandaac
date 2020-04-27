@@ -34,7 +34,7 @@ namespace MyrlandAAC
 			});
 
 			services.AddDbContext<OpenTibiaContext>();
-			services.AddAutoMapper(typeof(Startup));
+			services.AddAutoMapper(typeof(Startup), typeof(IConfiguration));
     		services.AddControllersWithViews();
 
 			var key = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtConfig").GetSection("secret").Value);

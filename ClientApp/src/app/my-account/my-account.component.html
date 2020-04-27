@@ -1,0 +1,35 @@
+<div class="card">
+    <div class="card-header"><h2>My Account</h2></div>
+    <div class="card-body">
+        <p>Welcome to your account page, {{this.account?.name}}</p>
+        <p>You have {{this.account?.premdays}} days remaining premium account.</p>
+    </div>
+</div>
+<br/>
+<div class="card">
+    <div class="card-header"><h2>Character List [{{this.account?.players.length}} characters]</h2></div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Level</th>
+                <th>Vocation</th>
+                <th>Town</th>
+                <th>Last Login</th>
+                <th>Status</th>
+                <th>Hide</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of account?.players">
+                <td>{{p.name}}</td>
+                <td>{{p.level}}</td>
+                <td>{{p.vocation}}</td>
+                <td>{{p.townName}}</td>
+                <td>{{p.lastlogin}}</td>
+                <td>{{p.status}}</td>
+                <td>{{p.hide}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

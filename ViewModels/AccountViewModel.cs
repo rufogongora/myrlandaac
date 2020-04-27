@@ -5,8 +5,9 @@ namespace MyrlandAAC.ViewModels
 {
     public class AccountViewModel
     {
-        public int Id {get;set;}
-        public string Name {get;set;}
-        public IEnumerable<PlayerViewModel> Players {get;set;}
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Premdays { get; set; }
+        public IEnumerable<PlayerViewModel> Players { get; set; }
     }
 }

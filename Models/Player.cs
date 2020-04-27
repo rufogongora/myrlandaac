@@ -14,5 +14,8 @@ namespace MyrlandAAC.Models
         public int GroupId { get; set; }
         public int Level { get; set; }
         public byte[] Conditions { get; set; } = new byte[0];
+        [Column("town_id")]
+        public int Town {get;set;}
+        public int Lastlogin {get;set;}
     }
 }
